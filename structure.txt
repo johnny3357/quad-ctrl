@@ -1,0 +1,5 @@
+gym_pybullet_drones:
+assets: contains XML tree of the drone model
+control: BaseControl.py(creates a basic control class), DSLPIDControl.py
+envs
+utils
