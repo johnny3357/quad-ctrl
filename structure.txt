@@ -1,5 +1,11 @@
 gym_pybullet_drones:
 assets: contains XML tree of the drone model
-control: BaseControl.py(creates a basic control class), DSLPIDControl.py
-envs
+control: BaseControl.py(creates a basic control class used by both later), DSLPIDControl.py(implements an actual PID controller), SimplePIDControl.py (also implements a PID controller)
+envs: BaseAviary.py(defines the basic drone environment, the physics, GUI, recording tools etc)
 utils
+
+Appropriate Commands:
+python3 singleagent.py --env hover --algo ddpg --obs kin --act pid --cpu 1 --resume none
+python3 test_singleagent.py --exp ./results/save-hover-ppo-kin-pid-03.03.2024_18.25.07 --time 6
+
+

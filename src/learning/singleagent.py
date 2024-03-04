@@ -33,7 +33,7 @@ import numpy as np
 import gym
 import torch
 from stable_baselines3.common.env_checker import check_env
-from stable_baselines3.common.cmd_util import \
+from stable_baselines3.common.env_util import \
     make_vec_env  # Module cmd_util will be renamed to env_util https://github.com/DLR-RM/stable-baselines3/pull/197
 from stable_baselines3.common.utils import set_random_seed
 from stable_baselines3 import A2C, PPO, SAC, TD3, DDPG
@@ -109,8 +109,8 @@ if __name__ == "__main__":
 
     #### On-policy algorithms ##################################
     onpolicy_kwargs = dict(activation_fn=torch.nn.ReLU,
-                           net_arch=[128, 128, dict(vf=[256], pi=[256])]
-                           # net_arch=[128, 128, dict(vf=[256], pi=[128, 256])]
+                           net_arch=[64, 64]
+                           #net_arch=dict(vf=[256,256], pi=[128, 128])
                            )
     if ARGS.algo == 'a2c':
         model = A2C(a2cppoMlpPolicy,
@@ -192,7 +192,7 @@ if __name__ == "__main__":
             model = SAC.load(path_prev_train)
         model.set_env(eval_env)
 
-    model.learn(total_timesteps=600000,  # int(1e12),
+    model.learn(total_timesteps=1000000,  # int(1e12),
                 callback=eval_callback,
                 log_interval=100,
                 )
