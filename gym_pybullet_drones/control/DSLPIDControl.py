@@ -248,6 +248,7 @@ class DSLPIDControl(BaseControl):
         pwm = np.clip(pwm, self.MIN_PWM, self.MAX_PWM)
         return self.PWM2RPM_SCALE * pwm + self.PWM2RPM_CONST
     
+    
     ################################################################################
 
     def _one23DInterface(self,

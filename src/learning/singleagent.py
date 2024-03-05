@@ -99,7 +99,7 @@ if __name__ == "__main__":
                                obs=ARGS.obs,
                                act=ARGS.act)
     if env_name == "hover-aviary-v0":
-        train_env = HoverAviary(initial_xyzs=np.array([[0, 0, 1]]),
+        train_env = HoverAviary(initial_xyzs=np.array([[0.5, 0.5, 1.5]]),
                                 aggregate_phy_steps=shared_constants.AGGR_PHY_STEPS,
                                 obs=ARGS.obs,
                                 act=ARGS.act)

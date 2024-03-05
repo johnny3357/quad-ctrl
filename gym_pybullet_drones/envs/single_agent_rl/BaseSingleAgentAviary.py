@@ -198,6 +198,22 @@ class BaseSingleAgentAviary(BaseAviary):
 
     ################################################################################
 
+    def _trajectoryTrackingRPMs(self,
+                                state):
+        """Function defining the RPM for tracking a given trajectory"""
+
+        rpm, _, _ = self.ctrl.computeControl(control_timestep=self.AGGR_PHY_STEPS * self.TIMESTEP,
+                                                 cur_pos=state[0:3],
+                                                 cur_quat=state[3:7],
+                                                 cur_vel=state[10:13],
+                                                 cur_ang_vel=state[13:16],
+                                                 target_pos=np.array([0,0,1])
+                                                 )
+        
+        return rpm
+    
+    ################################################################################
+
     def _preprocessAction(self,
                           action
                           ):
@@ -228,7 +244,10 @@ class BaseSingleAgentAviary(BaseAviary):
                                          i_coeff_att=(action[4] + 1) * self.TUNED_I_ATT,
                                          d_coeff_att=(action[5] + 1) * self.TUNED_D_ATT
                                          )
-            return self._trajectoryTrackingRPMs()
+            
+
+            return self._trajectoryTrackingRPMs(self._getDroneStateVector(0))
+            
         elif self.ACT_TYPE == ActionType.RPM:
             return np.array(self.HOVER_RPM * (1 + 0.05 * action))
         elif self.ACT_TYPE == ActionType.DYN:
