@@ -37,7 +37,7 @@ from gym_pybullet_drones.envs.single_agent_rl.BaseSingleAgentAviary import Actio
 
 import shared_constants
 
-STARTING_POINT = np.array([[0, 0, 1.2]])
+STARTING_POINT = np.array([[0.5, 0.5, 0]])
 
 
 def selective_noise(obs, mean=0.1, dev=0.05):
@@ -98,6 +98,8 @@ if __name__ == "__main__":
         ACT = ActionType.DYN
     elif ARGS.exp.split("-")[4] == 'pid':
         ACT = ActionType.PID
+    elif ARGS.exp.split("-")[4] == 'geo':
+        ACT = ActionType.GEO
     elif ARGS.exp.split("-")[4] == 'vel':
         ACT = ActionType.VEL
     elif ARGS.exp.split("-")[4] == 'tun':

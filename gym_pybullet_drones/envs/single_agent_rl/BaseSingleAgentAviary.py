@@ -10,6 +10,7 @@ from gym_pybullet_drones.envs.BaseAviary import DroneModel, Physics, ImageType, 
 from gym_pybullet_drones.utils.utils import nnlsRPM
 from gym_pybullet_drones.control.DSLPIDControl import DSLPIDControl
 from gym_pybullet_drones.control.SimplePIDControl import SimplePIDControl
+from gym_pybullet_drones.control.GeometricControl import GeometricControl
 
 
 class ActionType(Enum):
@@ -17,6 +18,7 @@ class ActionType(Enum):
     RPM = "rpm"  # RPMS
     DYN = "dyn"  # Desired thrust and torques
     PID = "pid"  # PID control
+    GEO = "geo"  # Geometric Control
     VEL = "vel"  # Velocity input (using PID control)
     TUN = "tun"  # Tune the coefficients of a PID controller
     ONE_D_RPM = "one_d_rpm"  # 1D (identical input to all motors) with RPMs
@@ -111,6 +113,14 @@ class BaseSingleAgentAviary(BaseAviary):
             else:
                 print(
                     "[ERROR] in BaseSingleAgentAviary.__init()__, no controller is available for the specified drone_model")
+        
+        if act in [ActionType.GEO]:
+            os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
+            if drone_model in [DroneModel.CF2X, DroneModel.CF2P]:
+                self.ctrl = GeometricControl(drone_model=DroneModel.CF2X)
+            else: 
+                print("Error: wrong model for the geometric controller.")
+        
         super().__init__(drone_model=drone_model,
                          num_drones=1,
                          initial_xyzs=initial_xyzs,
@@ -181,7 +191,7 @@ class BaseSingleAgentAviary(BaseAviary):
         """
         if self.ACT_TYPE == ActionType.TUN:
             size = 6
-        elif self.ACT_TYPE in [ActionType.RPM, ActionType.DYN, ActionType.VEL]:
+        elif self.ACT_TYPE in [ActionType.RPM, ActionType.DYN, ActionType.VEL, ActionType.GEO]:
             size = 4
         elif self.ACT_TYPE == ActionType.PID:
             size = 3
@@ -247,7 +257,19 @@ class BaseSingleAgentAviary(BaseAviary):
             
 
             return self._trajectoryTrackingRPMs(self._getDroneStateVector(0))
-            
+
+        elif self.ACT_TYPE == ActionType.GEO:
+            state = self._getDroneStateVector(0)
+            rpm, _, _ = self.ctrl.computeControl(drone_m = self.M,
+                                                 drone_J = self.J,
+                                                 cur_pos=state[0:3],
+                                                 cur_quat=state[3:7],
+                                                 cur_vel=state[10:13],
+                                                 cur_angular_vel=state[13:16],
+                                                 target_pos = np.array([0, 0, 1])
+                                                 )
+            return rpm
+
         elif self.ACT_TYPE == ActionType.RPM:
             return np.array(self.HOVER_RPM * (1 + 0.05 * action))
         elif self.ACT_TYPE == ActionType.DYN:

@@ -109,7 +109,7 @@ if __name__ == "__main__":
 
     #### On-policy algorithms ##################################
     onpolicy_kwargs = dict(activation_fn=torch.nn.ReLU,
-                           net_arch=[64, 64]
+                           net_arch=[128, 128]
                            #net_arch=dict(vf=[256,256], pi=[128, 128])
                            )
     if ARGS.algo == 'a2c':
@@ -192,7 +192,7 @@ if __name__ == "__main__":
             model = SAC.load(path_prev_train)
         model.set_env(eval_env)
 
-    model.learn(total_timesteps=1000000,  # int(1e12),
+    model.learn(total_timesteps=10000,  # int(1e12),
                 callback=eval_callback,
                 log_interval=100,
                 )

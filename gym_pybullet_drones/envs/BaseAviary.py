@@ -472,7 +472,7 @@ class BaseAviary(gym.Env):
         self.quat = np.zeros((self.NUM_DRONES, 4))
         self.rpy = np.zeros((self.NUM_DRONES, 3))
         self.vel = np.zeros((self.NUM_DRONES, 3))
-        self.ang_v = np.zeros((self.NUM_DRONES, 3))
+        self.ang_v = np.zeros((self.NUM_DRONES, 3)) # angular velocity in the world frame
         if self.PHYSICS == Physics.DYN:
             self.rpy_rates = np.zeros((self.NUM_DRONES, 3))
         #### Set PyBullet's parameters #############################
